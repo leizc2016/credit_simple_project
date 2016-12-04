@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation=" 
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd 
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+	<context:component-scan base-package="cn.springmvc.service" />
+	
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+	
+	<jaxws:endpoint id="courtAnnouncementQeuryService" implementor="com.bundcredit.service.impl.CourtAnnouncementQeuryService" address="/courtAnnouncementQeuryService" />
+	<jaxws:endpoint id="courtJudgmentDocQeuryService" implementor="com.bundcredit.service.impl.CourtJudgmentDocQeuryService" address="/courtJudgmentDocQeuryService" />
+	<jaxws:endpoint id="dishPersonAndBeExecutorQueryService" implementor="com.bundcredit.service.impl.DishPersonAndBeExecutorQueryService" address="/dishPersonAndBeExecutorQueryService" />
+	<jaxws:endpoint id="businessInfoQueryService" implementor="com.bundcredit.service.impl.BusinessInfoQueryService" address="/businessInfoQueryService" />
+	<jaxws:endpoint id="financialStableQueryService" implementor="com.bundcredit.service.impl.FinancialStableQueryService" address="/financialStableQueryService" />
+	<jaxws:endpoint id="unionPayZCQueryService" implementor="com.bundcredit.service.impl.UnionPayZCQueryService" address="/unionPayZCQueryService" />
+	<jaxws:endpoint id="orgCodeQueryService" implementor="com.bundcredit.service.impl.OrgCodeQueryService" address="/orgCodeQueryService" />
+	<jaxws:endpoint id="businessInfoDetailQueryService" implementor="com.bundcredit.service.impl.BusinessInfoDetailQueryService" address="/businessInfoDetailQueryService" />
+</beans>

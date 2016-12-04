@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcCourtBulletinDao">
+<resultMap type="CourtAnnouncementBean" id="BcCourtBulletinMap">
+        <id property="id" column ="id"/>
+		<result property="announcementType" column ="announcement_type"/>
+		<result property="announcement" column ="announcement"/>
+		<result property="litigant" column ="litigant"/>
+		<result property="announcementDate" column ="announcement_date"/>
+		<result property="content" column ="content"/>
+		<result property="businessName" column ="business_name"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcCourtBulletinCols" >
+			id,
+			announcement_type,
+			announcement,
+			litigant,
+			announcement_date,
+			content,
+			business_name,
+			create_time,
+			update_time
+    </sql>
+	
+	<select id="queryBcCourtBulletinsByBusinessName" resultMap="BcCourtBulletinMap">
+    	select <include refid="BcCourtBulletinCols"/> from bc_court_bulletin
+    	where business_name=#{param}
+    </select>
+    <insert id="saveBcCourtBulletin" parameterType="CourtAnnouncementBean"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_court_bulletin (
+			announcement_type,
+			announcement,
+			litigant,
+			announcement_date,
+			content,
+			business_name,
+			create_time,
+			update_time
+		)
+		values (
+		#{announcementType},#{announcement},#{litigant},#{announcementDate},#{content},#{businessName},now(),now())
+	</insert>
+</mapper> 

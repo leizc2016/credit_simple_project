@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BCInsDataUploadMybatisDao">
+	<resultMap id="apply" type="BCApplyDetailTmp">
+		<id property="id" column="id" />
+	</resultMap>
+	<resultMap id="detail" type="BCAccountDetailTmp">
+		<id property="id" column="id" />
+	</resultMap>
+	<resultMap id="history" type="BCHistoryRecordTmp">
+	 	<id property="id" column="id" />
+	</resultMap>
+	<resultMap id="comment" type="BCCommentTmp">
+	 	<id property="id" column="id" />
+	</resultMap>
+	<sql id="colsWithoutId">
+		id_card_type,id_card_num,full_name,apply_datetime,apply_amount_1,
+		apply_type,approval_amount_1,loan_account,loan_start_date,loan_end_date,apply_pro_city,
+		home_addr,sel_phone_num,apply_ip,
+		ins_code,upload_file_id,apply_amount_2,approval_amount_2,ass_type,ass_id_num,ass_id_type,ass_name,comment1,comment2  
+	</sql>
+	<sql id="applyColsWithoutId">
+		id_card_num,id_card_type,full_name,loan_account,loan_balance_1,
+		loan_balance_2,next_loan_reply_date,next_loan_reply_amt_1,
+		next_loan_reply_amt_2,loan_status_1,loan_status_2,ins_code,upload_file_id
+		, comment1, comment2
+	</sql>
+	<sql id="commentColsWithoutId">
+		id_card_num,id_card_type,full_name,ins_code,comment_type,comment_content,comment_time,upload_file_id
+	</sql>
+	<sql id="historyColsWithoutId">
+		id_card_num,id_card_type,full_name,apply_date,apply_amount_1,apply_amount_2,
+		apply_type,approval_amount_1,approval_amount_2,loan_account,loan_start_date,
+		loan_end_date,apply_pro_city,home_addr,sel_phone_num,apply_ip,loan_balance_1,
+		loan_balance_2,next_loan_reply_date,next_loan_reply_amt_1,next_loan_reply_amt_2,
+		loan_status_1,loan_status_2,ins_code,upload_file_id
+	</sql>
+	<!-- 批量插入用户申请记录数据 -->
+	<insert id="addApplyBatch" parameterType="java.util.List">
+		insert into bc_apply_detail_tmp (
+		<include refid="colsWithoutId"/>)
+		values 
+		<foreach collection="list" item="po" index="index" separator="," >  
+       		 (#{po.idCardType},#{po.idCardNum},#{po.fullName},#{po.applyDatetime},#{po.applyAmount1},
+       		 #{po.applyType},#{po.approvalAmount1},#{po.loanAccount},#{po.loanStartDate},#{po.loanEndDate},
+       		 #{po.applyProCity},#{po.homeAddr},#{po.selPhoneNum},#{po.applyIp},#{po.insCode},
+       		 #{po.uploadFileId},#{po.applyAmount2},#{po.approvalAmount2},#{po.assType},
+       		 #{po.assIDNum},#{po.assIDType},#{po.assName},#{po.comment1},#{po.comment2})  
+   		 </foreach>
+	</insert>
+	<!-- 批量插入用户申请记录数据 -->
+	<insert id="addBundBatch" parameterType="java.util.List">
+		insert into bc_bund_person_comment (
+		<include refid="colsWithoutId"/>)
+		values 
+		<foreach collection="list" item="po" index="index" separator="," >  
+      		 (#{po.idCardNum},#{po.commentType},#{po.commentContent},#{po.lastUpdateDatetime})
+   		 </foreach>
+	</insert>
+	<select id="findApplyRecByFileId" parameterType="Long" resultMap="apply">
+	 	select * from bc_apply_detail_tmp where upload_file_id=#{fileId}
+	</select>
+	
+	<!-- 插入用户行为数据 -->
+	<insert id="addDetailBatch" parameterType="java.util.List">
+		insert into bc_acc_detail_tmp (
+		<include refid="applyColsWithoutId"/>)
+		values 
+		<foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.id_card_num},#{item.id_card_type},#{item.full_name},#{item.loan_account},
+       		 #{item.loan_balance_1},#{item.loan_balance_2},#{item.next_loan_reply_date},
+       		 #{item.next_loan_reply_amt_1},#{item.next_loan_reply_amt_2},#{item.loan_status_1},
+       		 #{item.loan_status_2},#{item.insCode},#{item.uploadFileId},#{item.comment1},
+       		 #{item.comment2})
+   		 </foreach>
+	</insert>
+	
+	<insert id="addCommentBatch" parameterType="java.util.List">
+		insert into bc_bund_person_comment_tmp (
+		<include refid="commentColsWithoutId"/>)
+		values 
+		<foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item.idCardNum},#{item.idCardType},#{item.fullName},#{item.insCode},#{item.commentType},
+       		 #{item.commentContent},#{item.commentTime},#{item.uploadFileId})
+   		 </foreach>
+	</insert>
+	
+	<select id="findDetailRecByFileId" parameterType="Long" resultMap="detail">
+	 	select * from bc_acc_detail_tmp where upload_file_id=#{fileId}
+	</select>
+	
+	<!-- 插入历史回溯数据 -->
+		<insert id="addHistoryBatch" parameterType="java.util.List">
+		insert into bc_his_rec_tmp (
+		<include refid="historyColsWithoutId"/>)
+		values 
+		<foreach collection="list" item="item" index="index" separator="," >  
+       		 (#{item[id_card_num]},#{item[id_card_type]},#{item[full_name]},#{item[apply_date]},
+       		 #{item[apply_amount_1]},#{item[apply_amount_2]},#{item[apply_type]},
+       		 #{item[approval_amount_1]},#{item[approval_amount_2]},#{item[loan_account]},
+       		 #{item[loan_start_date]},#{item[loan_end_date]},#{item[apply_pro_city]},
+       		 #{item[home_addr]},#{item[sel_phone_num]},#{item[apply_ip]},
+       		 #{item[loan_balance_1]},#{item[loan_balance_2]},
+       		 #{item[next_loan_reply_date]},#{item[next_loan_reply_amt_1]},
+       		 #{item[next_loan_reply_amt_2]},#{item[loan_status_1]},#{item[loan_status_2]},
+       		 #{item[insCode]},#{item[uploadFileId]}) 
+   		 </foreach>
+	</insert>
+	<select id="findHistoryRecByFileId" parameterType="Long" resultMap="history">
+	 	select * from bc_his_rec_tmp where upload_file_id=#{fileId}
+	</select>
+	
+	<select id="findCommentByFileId" parameterType="Long" resultMap="comment">
+	 	select * from bc_bund_person_comment_tmp where upload_file_id=#{fileId}
+	</select>
+	
+	<select id="hasItem4FailedApplyTmp" resultType="int">
+		select count(*) 
+		  from bc_apply_detail_tmp tmp
+		 where tmp.id_card_type = #{param1} AND tmp.id_card_num = #{param1} AND tmp.ins_code = #{param3} AND 
+		   tmp.apply_datetime = #{param4} and tmp.upload_file_id in (${param5})
+	</select>
+	
+	<select id="hasItem4SuccessfulApplyTmp" resultType="int">
+		select count(*) 
+		  from bc_apply_detail_tmp tmp
+		 where tmp.id_card_type = #{param1} AND tmp.id_card_num = #{param2} AND tmp.ins_code = #{param3} AND 
+		   tmp.loan_account = #{param4} and tmp.upload_file_id in (${param5})
+	</select>
+	
+	<select id="hasItem4AccountDetailTmp"  resultType="int">
+		select count(*) 
+		  from bc_acc_detail_tmp tmp
+		 where tmp.id_card_type = #{param1} AND tmp.id_card_num = #{param2} AND tmp.ins_code = #{param3} AND 
+		       tmp.next_loan_reply_date >= #{param4} and tmp.loan_account =#{param5} and tmp.upload_file_id in (${param6})
+	</select>
+
+	<select id="hasItem4CommentTmp"  resultType="int">
+		select count(*) 
+		  from bc_bund_person_comment_tmp tmp
+		 where tmp.id_card_type = #{param1} AND tmp.id_card_num = #{param2} AND tmp.ins_code = #{param3} AND 
+		       tmp.comment_time >= #{param4} and tmp.upload_file_id in (${param5})
+	</select>
+	
+</mapper> 

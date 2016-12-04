@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.CreditSearchMybatisDao">
+	
+	<resultMap type="BcHis" id="bcHisResultMap">
+	    <id column="id" property="id" />
+	    <result column="query_date" property="queryDate"/>
+	    <result column="query_condition" property="queryCondition"/>
+	    <result column="product_code" property="productCode"/>
+	    <result column="product_code_2nd" property="productCode2nd"/>
+	    <result column="flag" property="flag"/>
+	    <result column="condition_id" property="conditionId"/>
+	    <result column="user_id" property="userId"/>
+	    <result column="user_name" property="userName"/>
+	    <result column="query_type" property="queryType"/>
+	    <result column="ins_code" property="insCode"/>
+	</resultMap>
+	<resultMap type="BcHisConcise" id="bcHisConciseResultMap">
+	    <id column="id" property="id" />
+	    <result column="query_type" property="queryType"/>
+	    <result column="id_card_num" property="idCardNum"/>
+	</resultMap>
+	<resultMap type="BcHisFull" id="bcHisFullResultMap">
+	    <id column="id" property="id" />
+	    <result column="query_type" property="queryType"/>
+	    <result column="id_card_num" property="idCardNum"/>
+	</resultMap>
+	
+	<resultMap type="BundPersonComment" id="bpCmt">
+        <id property="id" column="id" />
+        <result property="idCardNum" column="id_card_num" />
+        <result property="commentType" column="comment_type" />
+        <result property="content" column="comment_content" />
+        <result property="lastUpdateDatetime" column="comment_time" />
+    </resultMap>
+	<resultMap type="PersonBasicInfo" id="pbi">
+        <id property="idCardNum" column="id_card_num" />
+        <result property="fullName" column="full_name" />
+        <result property="location" column="location" />
+        <result property="reportDatetime" column="report_datetime" />
+        <result property="lastUpdateDatetime" column="last_update_datetime" />
+    </resultMap>
+    <resultMap type="PersonSummaryReport" id="personSummary">
+    </resultMap>
+    <resultMap type="PersonApplyDetail" id="personApply">
+    	<result property="approveAmount" column="approval_amount" />
+    	<result property="approveAmount1" column="approval_amount_1" /> 
+    </resultMap>           
+    <resultMap type="PersonAccDetail" id="personAccDetail">
+    	<result property="latest24monStatus" column="latest_24mon_status"/>
+    </resultMap>
+       
+    <sql id="pbiCols">
+    	id_card_num,full_name,location,report_datetime,last_update_datetime
+    </sql>
+    <sql id="pbCmdCols">
+    	id,id_card_num,comment_type,comment_content,comment_time
+    </sql>
+    <select id="listAllPerson" parameterType="map" resultMap="pbi">
+    	select * from bc_person_basic_info 
+    	<where>
+    	<if test="fullName !=null and fullName!=''">
+    		full_name like  '%${fullName}%' 
+    		</if>
+    		<if test="idCardNum !=null and idCardNum!=''">
+    		and id_card_num like  '%${idCardNum}%'
+    		</if>
+    		<if test="location !=null and location!=''">
+    		and location like  '%${location}%'
+    		</if>
+    	</where>
+    	ORDER BY last_update_datetime DESC
+    </select>
+    <select id="bundCommentByIdCardNum" resultMap="bpCmt">
+    	select * from bc_bund_person_comment 
+    	where id_card_num=#{idCardNum}
+    </select>
+    <insert id="addBundComment" parameterType="BundPersonComment" useGeneratedKeys="true" keyProperty="id">
+		insert into bc_bund_person_comment (
+			<include refid="pbCmdCols"></include>)
+		values (#{id},#{idCardNum},#{commentType},#{content},#{lastUpdateDatetime})
+	</insert>
+	<insert id="savePersonBasicInfo" parameterType="PersonBasicInfo">
+		insert into bc_person_basic_info (<include refid="pbiCols"></include>) 
+		values (#{idCardNum2},#{fullName},#{location},#{reportDatetime},#{lastUpdateDatetime})
+	</insert>
+	<update id="updatePersonBasicInfo" parameterType="PersonBasicInfo">
+		UPDATE bc_person_basic_info set last_update_datetime=NOW()
+		    <if test="location !=null and location!=''">
+    		  ,location=#{location}
+    		</if>
+		where id_card_num=#{idCardNum2}
+	</update>
+	<insert id="saveApplyDetailInfo" parameterType="PersonApplyDetail" useGeneratedKeys="true" keyProperty="id">
+		insert into bc_person_apply_detail (id,apply_datetime,apply_amount,
+		apply_type,approval_amount,loan_account,loan_start_date,loan_end_date,
+		apply_pro_city,home_addr,sel_phone_num,apply_ip,ins_code,id_card_type, 
+		id_card_num,full_name,apply_amount_1,approval_amount_1,ass_type,ass_id_num,ass_id_type,ass_name,
+		comment1, comment2) 
+		values(#{id},#{applyDatetime},
+		#{applyAmount},#{applyType},#{approveAmount},#{loanAccount},
+		#{loanStartDate},#{loanEndDate},#{applyProCity},#{homeAddr},
+		#{selPhoneNum},#{applyIp},#{insCode},#{idCardType},#{idCardNum},
+		#{fullName},#{applyAmount1},#{approveAmount1},#{assType},#{assIDNum},
+		#{assIDType},#{assName},#{comment1},#{comment2})
+	</insert>
+	<insert id="saveAccDetailInfo" parameterType="PersonAccDetail">
+		insert into bc_person_acc_detail (id_card_type,full_name,loan_acc_id,loan_balance,
+		next_loan_repay_amt,next_loan_repay_date,loan_status,ins_code,id_card_num,
+		update_date,total_allowed_amount,loan_begin_date,loan_end_date,loan_balance_1,
+		loan_status_1, next_loan_repay_amt_1, latest_24mon_status, upload_file_id,
+		comment1, comment2) 
+		values(#{idCardType},#{fullName},#{loanAccId},#{loanBalance},#{nextLoanRepayAmt},
+		#{nextLoanRepayDate},#{loanStatus},#{insCode},#{idCardNum},#{updateDate},
+		#{totalAllowedAmount},#{loanBeginDate},#{loanEndDate},#{loanBalance1},
+		#{loanStatus1},#{nextLoanRepayAmt1},#{latest24monStatus},#{uploadFileId},
+		#{comment1},#{comment2})
+	</insert>
+	
+	<insert id="savePersonComment" parameterType="PersonComment" useGeneratedKeys="true" keyProperty="id">
+		insert into bc_bund_person_comment (id,ins_code,id_card_num,
+		id_card_type,full_name,comment_type,comment_content,comment_time) 
+		values(#{id},#{insCode},#{idCardNum},#{idCardType},#{fullName},#{commentType},#{commentContent},
+		#{commentTime})
+
+	</insert>
+	<!--
+		获取用户: 输出直接映射到对象, login_name列要"as loginName"以方便映射 ,team_id as "team.id"创建team对象并赋值
+	-->
+
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultType="Car">
+		select id, title
+		from vc_car
+	</select>
+	
+	
+	  
+	<select id="getPersonBasicInfo" parameterType="String" resultType="PersonBasicInfo">
+	    select i.id_card_num as idCardNum
+	      ,i.full_name as fullName
+	      ,i.location
+	      ,i.report_datetime as reportDatetime
+	      ,i.last_update_datetime as lastUpdateDatetime
+		  from bc_person_basic_info i 
+		 where i.id_card_num=#{idCardNum}
+	</select>
+	
+	<select id="getEnterpriseInfo" parameterType="String" resultType="EnterpriseInfo">
+	    select registration_id as regID,
+				name, 
+				type, 
+				legal_person as legalPerson,
+				registered_capital as registeredCapital,
+				address,
+				bureau,
+				state,
+				scope,
+				set_up_date as setupDate,
+				from_date as fromDate,
+				approval_date as approvalDate,
+				city, 
+				create_time as createTime,
+				url
+		from bc_enterprise_info
+		where registration_id=#{regID}
+	</select>
+	
+	<select id="getPersonSummaryReport" parameterType="String" resultMap="personSummary">
+	    select *
+  		from bc_person_summary_report r
+		 where r.id_card_num=#{idCardNum}
+	</select>
+	
+	<select id="getPersonAccDetails" parameterType="String" resultMap="personAccDetail">
+	    SELECT det.id_card_type, 
+		det.comment1, 
+		det.comment2, 
+		det.full_name, 
+		det.id_card_num, 
+		det.ins_code, 
+		det.latest_24mon_status, 
+		det.loan_acc_id, 
+		det.loan_balance, 
+		det.loan_balance_1, 
+		det.loan_status, 
+		det.loan_status_1, 
+		det.next_loan_repay_amt, 
+		det.next_loan_repay_amt_1, 
+		det.next_loan_repay_date, 
+		det.update_date, 
+		det.upload_file_id, 
+		app.approval_amount as total_allowed_amount, 
+		app.approval_amount_1 as total_allowed_amount_1, 
+		app.loan_start_date as loan_begin_date, 
+		app.loan_end_date
+		FROM bc_person_acc_detail det
+		 LEFT JOIN bc_person_apply_detail app  
+            on det.id_card_type=app.id_card_type 
+                  and det.id_card_num=app.id_card_num 
+                  and det.ins_code=app.ins_code 
+                  and det.loan_acc_id=app.loan_account 
+         where det.id_card_num=#{idCardNum}
+	</select>
+	
+	<select id="getPersonAccDetail" parameterType="personAccDetail" resultMap="personAccDetail">
+	    SELECT	*
+		FROM bc_person_acc_detail
+		WHERE id_card_num=#{idCardNum} and id_card_type=#{idCardType}
+		and ins_code=#{insCode} and loan_acc_id=#{loanAccId}
+	</select>
+	
+	<update id="updateAccDetailInfo" parameterType="personAccDetail" >
+	 update bc_person_acc_detail 
+	 set next_loan_repay_date=#{nextLoanRepayDate}
+	   , loan_status=#{loanStatus}, loan_status_1=#{loanStatus1}
+	   , next_loan_repay_amt=#{nextLoanRepayAmt} , next_loan_repay_amt_1=#{nextLoanRepayAmt1}
+	   , loan_balance=#{loanBalance}, loan_balance_1=#{loanBalance1}
+	   , latest_24mon_status=#{latest24monStatus},upload_file_id=#{uploadFileId},
+	   update_date=#{updateDate}
+	 where id_card_num=#{idCardNum} and id_card_type=#{idCardType}
+		and ins_code=#{insCode} and loan_acc_id=#{loanAccId}
+	</update>
+	
+	<select id="getPersonApplyDetails" parameterType="String" resultMap="personApply">
+	   SELECT *
+		from bc_person_apply_detail
+		WHERE id_card_num=#{idCardNum}
+	</select>
+    <select id="oneBcHisConcise" parameterType="long" resultType="bcHisConcise" >
+    	select id, id_card_num, query_type
+  		  from bc_his_concise 
+ 		 where id=#{0}
+    </select>
+    <select id="oneBcHisFull" parameterType="long" resultType="bcHisFull" >
+    	select id, id_card_num, query_type
+  		  from bc_his_full 
+ 		 where id=#{0}
+    </select>
+    <insert id="recordBcHisConcise" parameterType="bcHisConcise" useGeneratedKeys="true" keyProperty="id">
+		INSERT into bc_his_concise ( query_type, id_card_num) VALUES( #{queryType}, #{idCardNum})
+	</insert>
+	<insert id="recordBcHisFull" parameterType="bcHisFull" useGeneratedKeys="true" keyProperty="id">
+		INSERT into bc_his_full ( query_type, id_card_num) VALUES(#{queryType}, #{idCardNum})
+	</insert>
+	<insert id="saveGEOHis" parameterType="bcHisYYSGEO" useGeneratedKeys="true" keyProperty="id">
+		INSERT into bc_his_yys_geo ( cell_num, auth_code, user_name, contact_num) 
+		                     VALUES(#{callNum}, #{authCode}, #{userName}, #{contactNum})
+	</insert>
+	<sql id="bsHisColumn">
+	   query_date,       
+	   query_condition,  
+	   product_code, 
+	   product_code_2nd, 
+	   flag,             
+	   condition_id,     
+	   user_id,
+	   query_type
+	</sql>
+	
+	<insert id="recordBcHis" parameterType="bcHis" useGeneratedKeys="true" keyProperty="id">
+		INSERT into bc_his ( <include refid="bsHisColumn"></include>) 
+				VALUES(#{queryDate},      #{queryCondition}, #{productCode},
+				       #{productCode2nd}, #{flag},           #{conditionId},
+				       #{userId}, #{queryType})
+	</insert>
+	
+	
+	<select id="getISPHis" parameterType="map" resultType="BcHis" >
+	     SELECT    h.query_date,       
+				   h.query_condition,  
+				   h.product_code, 
+				   h.product_code_2nd, 
+				   h.flag,             
+				   h.condition_id,     
+				   h.user_id, 
+				   h.id,
+				   u.name as user_name,
+				   h.query_type,
+				   u.ins_code as insCode
+		  FROM bc_his h
+		  left join vc_user u on u.id=h.user_id
+		 <where>
+		      h.product_code LIKE 'YYSCX%'  
+		      <if test="userId!=null and !''.equals(userId)">
+		          and h.user_id = #{userId}
+		      </if>
+		      <if test="queryType!=null and !''.equals(queryType)">
+		          and h.query_type = #{queryType}
+		      </if>
+		      <if test="insCode!=null and !''.equals(insCode)">
+		          and u.ins_code = #{insCode}
+		      </if>
+		      <if test="queryCondition!=null and !''.equals(queryCondition)">
+		          and h.query_condition = #{queryCondition}
+		      </if>
+		 </where> 
+		 order by h.query_date desc 
+	</select>
+	
+	<select id="bcHis" parameterType="map" resultType="BcHis" >
+	     SELECT    h.query_date,       
+				   h.query_condition,  
+				   h.product_code, 
+				   h.product_code_2nd, 
+				   h.flag,             
+				   h.condition_id,     
+				   h.user_id, 
+				   h.id,
+				   u.name as user_name,
+				   h.query_type,
+				   u.ins_code as insCode
+		  FROM bc_his h
+		  left join vc_user u on u.id=h.user_id
+		 <where>
+		      <if test="userId!=null and !''.equals(userId)">
+		          h.user_id = #{userId}
+		      </if>
+		      <if test="productCode!=null and !''.equals(productCode)">
+		          and h.product_code like "%"#{productCode}"%"
+		      </if>
+		      <if test="queryType!=null and !''.equals(queryType)">
+		          and h.query_type = #{queryType}
+		      </if>
+		      <if test="insCode!=null and !''.equals(insCode)">
+		          and u.ins_code = #{insCode}
+		      </if>
+		      <if test="queryCondition!=null and !''.equals(queryCondition)">
+		          and h.query_condition = #{queryCondition}
+		      </if>
+		 </where> 
+		 order by h.query_date desc 
+	</select>
+	
+	<insert id="insertAccQueryHistory" parameterType="accQueryHistory" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_acc_query_history (
+		query_datetime, query_type, id_card_num, page_id, ins_acc_id)
+		values (
+		#{queryDatetime}, #{queryType}, #{idCardNum} , #{pageId} , #{insAccId})
+	</insert>
+	
+	<select id="getbcHis" parameterType="map" resultType="AccQueryHistory">
+	   SELECT u.`name` as insAccName, 
+	          h.id_card_num as idCardNum,
+              h.query_datetime as queryDatetime, 
+              'L' as lastLabel,
+       		  h.query_type as queryType,  
+       		  h.page_id as pageId,
+       		  u.ins_code as insCode
+ 		FROM bc_acc_query_history h
+		LEFT JOIN vc_user u on u.id=h.ins_acc_id
+	    <where>
+	        1=1 
+			<if test="insAccId != null and !''.equals(insAccId) " >
+				and h.ins_acc_id=#{insAccId}
+			</if>
+			<if test="pageId != null and !''.equals(pageId) " >
+				and h.page_id=#{pageId}
+			</if>
+			<if test="queryType != null and !''.equals(queryType)">
+				and h.query_type=#{queryType}
+			</if>
+			<if test="insCode != null and !''.equals(insCode)">
+				and u.ins_code=#{insCode}
+			</if>
+			<if test="idCardNum != null and !''.equals(idCardNum)">
+				and h.id_card_num=#{idCardNum}
+			</if>
+			ORDER BY h.query_datetime DESC
+		</where>
+	</select>
+	
+	
+	<select id="getDiscountByInsCodeProduct" parameterType="map" fetchSize="1"  resultType="Float">
+	   select p.query_discount 
+		  from bc_ins_prod_price p 
+		 WHERE p.ins_code=#{insCode} and p.prod_code=#{productCode}
+	</select>
+	
+	<select id="getPersonSummaryReportPartCount" fetchSize="1"  resultType="Integer">
+	    
+	    SELECT 
+			count(*) as loanCnt 
+      FROM 
+            bc_person_apply_detail app 
+ LEFT JOIN 
+            bc_person_acc_detail det  
+                on  det.id_card_num=app .id_card_num 
+                   and app.loan_account=det.loan_acc_id
+  	 WHERE  
+				app.id_card_num=#{0} or det.id_card_num=#{0}
+	</select>
+	
+	<select id="getPersonSummaryReportPart1" fetchSize="1"  resultType="Integer">
+	   SELECT count(*) as loanCnt 
+	     FROM bc_person_apply_detail app 
+	    WHERE app.id_card_num=#{0} and app.loan_account != ''
+	</select>
+	
+	<select id="getPersonSummaryReportPart5" fetchSize="1"  resultType="Integer">
+	   SELECT count(*) as loanCnt 
+	     FROM bc_person_acc_detail det 
+	    WHERE det.id_card_num=#{0} and det.latest_24mon_status  REGEXP '[1-7]'
+	</select>
+	
+	<select id="getPersonSummaryReportPart3" fetchSize="1"  resultType="Integer">
+	   SELECT count(*) as in90LoanApplyCnt  
+  		FROM bc_person_apply_detail app 
+		 WHERE <![CDATA[ TO_DAYS(NOW()) - TO_DAYS(app.apply_datetime) <= 90 ]]>  
+		   AND app.id_card_num=#{0}
+	</select>
+	
+	<select id="getPersonSummaryReportPart4" fetchSize="1"  resultType="Integer">
+	SELECT 
+			count(*) as openLoanCnt 
+      FROM 
+            bc_person_acc_detail det  
+  	 WHERE  
+  	        det.loan_status not in ('C', 'c') and det.id_card_num=#{0}
+	</select>
+	
+	<select id="getPersonSummaryReportPart2" fetchSize="1" resultType="PersonSummaryReport">
+			SELECT  
+			       SUM(det.loan_balance) as openLoanTotalAmount, 
+			       SUM(det.loan_balance_1) as openLoanTotalAmount1, 
+			       SUM(det.next_loan_repay_amt) as nextLoanRepayAmount,  
+			       SUM(det.next_loan_repay_amt_1) as nextLoanRepayAmount1 
+       		  FROM 
+       		       bc_person_basic_info person
+	     LEFT JOIN 
+	               bc_person_acc_detail det  on  det.id_card_num=person.id_card_num 
+  			 WHERE   
+  			       person.id_card_num=#{0}              
+		  GROUP BY  
+		           person.id_card_num
+ 
+	</select>
+	
+	<select id="getProduct" parameterType="String"   resultType="QueryProduct">
+	     select p.id, 
+	            p.`name`, 
+	            p.query_noreturn_price as queryNoreturnPrice,
+                p.query_price as queryPrice, 
+                p.query_return_price as queryReturnPrice,
+                p.cash_flag as cashFlag
+		  from bc_product p
+		 WHERE p.product_code=#{productCode}
+	</select>
+	<select id="getIns24hCahceStr" resultType="Map">
+		select b.cache_time as cacheTime,b.cache_obj as cacheObj from bc_credit_query_cache b 
+		where b.ins_code=#{0} and b.id_card_num=#{1} and b.query_type=#{2}
+	</select>
+	<insert id="save24hCache">
+	  insert into bc_credit_query_cache (ins_code,id_card_num,query_type,cache_time,cache_obj) 
+	  values (#{0},#{1},#{2},now(),#{3})
+	</insert>
+	<insert id="save24hCacheLog">
+	  insert into bc_credit_query_cache_log (ins_code,id_card_num,query_type,cache_time,cache_obj) 
+	  values (#{0},#{1},#{2},now(),#{3})
+	</insert>	
+	<update id="update24hCache">
+	 update bc_credit_query_cache b set cache_time=now(), cache_obj=#{3} 
+	 where b.ins_code=#{0} and b.id_card_num=#{1} and b.query_type=#{2}
+	</update>
+	<delete id="delete24hCache">
+	 delete from bc_credit_query_cache  
+	 where ins_code=#{0} and id_card_num=#{1} and query_type=#{2}
+	</delete>
+</mapper> 

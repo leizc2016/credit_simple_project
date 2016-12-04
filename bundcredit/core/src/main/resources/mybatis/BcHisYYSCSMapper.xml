@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcHisYYSCSMybatisDao">
+	<resultMap type="BcHisYYSCS" id="BcHisYYSCSMap">
+        <id property="id" column ="id"/>
+		<result property="userName" column ="user_name"/>
+		<result property="idCardNum" column ="id_card_num"/>
+		<result property="cellNum" column ="cell_num"/>
+		<result property="homeAddr" column ="home_addr"/>
+		<result property="workingSite" column ="working_site"/>
+		<result property="contactNum" column ="contact_num"/>
+		<result property="authCode" column ="auth_code"/>
+		<result property="matchLevel" column ="match_level"/>
+		<result property="matchIdCard" column ="match_id_card"/>
+		<result property="netTime" column ="net_time"/>
+		<result property="cellAccount" column ="cell_account"/>
+		<result property="fixedAccount" column ="fixed_account"/>
+		<result property="asynData" column ="asyn_data"/>
+		<result property="asynCode" column ="asyn_code"/>
+		<result property="homeProvince" column ="home_province"/>
+		<result property="homeCity" column ="home_city"/>
+		<result property="homeDistrict" column ="home_district"/>
+		<result property="workingProvince" column ="working_province"/>
+		<result property="workingCity" column ="working_city"/>
+		<result property="workingDistrict" column ="working_district"/>
+    </resultMap>
+	
+       
+    <sql id="bcHisYYSCSCols">
+    	id,user_name,id_card_num,cell_num,home_addr,working_site,contact_num,auth_code,match_level,
+    	match_id_card,net_time,cell_account,fixed_account,asyn_data,asyn_code,home_province,home_city,
+    	home_district,working_province,working_city,working_district
+    </sql>
+   
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultType="BcHisYYSCS">
+		select 
+ 		<include refid="bcHisYYSCSCols"/>
+		from bc_his_yys_cs
+	</select>
+	
+	<update id="updateBcHisYYSCS" parameterType="BcHisYYSCS" >
+	 update bc_his_yys_cs 
+	 set user_name=#{userName},id_card_num=#{idCardNum},cell_num=#{cellNum},
+	     home_addr=#{homeAddr},working_site=#{workingSite},contact_num=#{contactNum},
+	     auth_code=#{authCode},match_level=#{matchLevel},match_id_card=#{matchIdCard},
+	     net_time=#{netTime},cell_account=#{cellAccount},fixed_account=#{fixedAccount},
+	     asyn_data=#{asynData},asyn_code=#{asynCode},home_province=#{homeProvince},
+		 home_city=#{homeCity},home_district=#{homeDistrict},working_province=#{workingProvince},
+		 working_city=#{workingCity},working_district=#{workingDistrict}
+	 where id=#{id}
+	</update>
+	
+    <insert id="saveBcHisYYSCS" parameterType="BcHisYYSCS" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_his_yys_cs (
+		user_name,id_card_num,cell_num,home_addr,working_site,contact_num,auth_code,match_level,
+    	match_id_card,net_time,cell_account,fixed_account,asyn_data,asyn_code,home_province,home_city,
+    	home_district,working_province,working_city,working_district)
+		values (
+		#{userName},#{idCardNum},#{cellNum},#{homeAddr},#{workingSite},#{contactNum},#{authCode},
+		#{matchLevel},#{matchIdCard},#{netTime},#{cellAccount},#{fixedAccount},#{asynData},#{asynCode},
+		#{homeProvince},#{homeCity},#{homeDistrict},#{workingProvince},#{workingCity},#{workingDistrict}
+		)
+	</insert>
+	
+	<select id="getBcHisYYSCSById" resultMap="BcHisYYSCSMap">
+    	select * from bc_his_yys_cs 
+    	where id=#{id}
+    </select>
+    
+    <select id="getBcHisYYSCSByAsynCode" resultMap="BcHisYYSCSMap">
+    	select * from bc_his_yys_cs 
+    	where asyn_code=#{asynCode}
+    </select>
+    
+	<delete id="deleteBcHisYYSCS" parameterType="long">
+		 delete from bc_his_yys_cs  
+		 where id=#{id}
+	</delete>
+	
+	<select id="checkAuthCode" parameterType="map" resultType="string">
+   		select DISTINCT c.cell_num from bc_his_yys_cs c
+   		left join bc_his h on c.id=h.condition_id
+   		left join vc_user u on u.id=h.user_id 
+		<where>
+			1=1
+			<if test="authCode!=null and authCode != ''" >
+				and c.auth_code = #{authCode}
+			</if>
+			<if test="insCode!=null and insCode != ''" >
+				and u.ins_code = #{insCode}
+			</if>
+		</where> 
+   	</select>
+</mapper> 

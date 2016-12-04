@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.CompanyInfoDao">
+
+	<resultMap type="CompanyInfoBean" id="companyInfoMap">
+        <id property="id" column="id" />
+        <result property="name" column="company_name" />
+        <result property="address" column="reg_address" />
+        <result property="regID" column="business_license_id" />
+        <result property="opAddress" column="op_address" />
+    </resultMap>
+	
+       
+    <sql id="cinfoCols">
+    	id,company_name,reg_address,business_license_id,op_address
+    </sql>
+   
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultMap="companyInfoMap">
+		select 
+ 		<include refid="cinfoCols"/>
+		from bc_company_info
+		<where>
+			<if test="name != null">
+				and company_name like '%${name}%'
+			</if>
+			<if test="opAddress != null">
+				and op_address like '%${opAddress}%'
+			</if>
+		</where>
+	</select>	
+</mapper> 

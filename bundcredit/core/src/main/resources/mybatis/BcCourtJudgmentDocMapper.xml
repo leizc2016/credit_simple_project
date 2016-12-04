@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcCourtJudgmentDocDao">
+<resultMap type="CourtJudgmentDocBean" id="BcCourtJudgmentDocMap">
+        <id property="id" column ="id"/>
+        <result property="judgmentId" column ="judgment_id"/>
+		<result property="courtName" column ="court_name"/>
+		<result property="judgmentType" column ="judgment_type"/>
+		<result property="title" column ="title"/>
+		<result property="caseCode" column ="case_code"/>
+		<result property="judgeDate" column ="judge_date"/>
+		<result property="judgmentDocUrl" column ="judgment_docUrl"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+     
+    <sql id="BcCourtJudgmentDocCols" >
+    		id,
+			judgment_id,
+			court_name,
+			title,
+			case_code,
+			judge_date,
+			judgment_docUrl,
+			judgment_type,
+			create_time,
+			update_time
+
+    </sql>
+	
+	<select id="queryBcCourtJudgmentDocByBusinessName" resultMap="BcCourtJudgmentDocMap">
+    	select <include refid="BcCourtJudgmentDocCols"/> from bc_court_judgment_doc
+    	where title like concat('%',#{param},'%')
+    </select>
+    <insert id="saveBcCourtJudgmentDoc" parameterType="CourtJudgmentDocBean"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_court_judgment_doc (
+			judgment_id,
+			court_name,
+			title,
+			case_code,
+			judge_date,
+			judgment_docUrl,
+			judgment_type,
+			create_time,
+			update_time
+		)
+		values (
+		#{judgmentId},#{courtName},#{title},#{caseCode},#{judgeDate},#{judgmentDocUrl},#{judgmentType},now(),now())
+	</insert>
+</mapper> 

@@ -1,0 +1,18 @@
+
+package com.pactera.pds.u2.commerce.data;
+
+import com.pactera.pds.u2.commerce.entity.User;
+
+import org.springside.modules.test.data.RandomData;
+
+public class UserData {
+
+	public static User randomNewUser() {
+		User user = new User();
+		user.setLoginName(RandomData.randomName("user"));
+		user.setName(RandomData.randomName("User"));
+		user.setPlainPassword(RandomData.randomName("password"));
+
+		return user;
+	}
+}

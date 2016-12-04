@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper
+	namespace="com.pactera.pds.u2.commerce.repository.mybatis.BCUserMybatisDao">
+
+	<resultMap id="userResult" type="BCUser">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+	</resultMap>
+	<!-- 获取用户: 输出直接映射到对象, login_name列要"as loginName"以方便映射 ,team_id as "team.id"创建team对象并赋值 -->
+	<select id="get" parameterType="long" resultType="BCUser">
+		select id,
+		name,
+		login_name as loginName,
+		password,salt,
+		ins_code as insCode ,
+		register_date as registerDate,
+		last_login_time as lastLoginTime,
+		uuid,
+		roles,
+		allow
+		from vc_user
+		where id=#{id}
+	</select>
+
+	<select id="findUserByLoginName" parameterType="String"
+		resultType="BCUser">
+		select id, name,
+		login_name as loginName,
+		ins_code as
+		insCode,uuid,
+		password,salt,roles,register_date,allow,last_login_time
+		from vc_user
+		where
+		login_name=#{userName}
+	</select>
+	
+	<select id="findUserByUUID" parameterType="String"
+		resultType="BCUser">
+		select id, name,
+		login_name as loginName,
+		ins_code as
+		insCode,uuid,
+		password,salt,roles,register_date,allow,last_login_time
+		from vc_user
+		where
+		uuid=#{UUID}
+	</select>
+
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="search" parameterType="map" resultType="BCUser">
+		select id, name,
+		login_name as loginName
+		from vc_user
+		<where>
+			<if test="loginName != null">
+				login_name=#{loginName}
+			</if>
+			<if test="name != null">
+				and name=#{name}
+			</if>
+		</where>
+	</select>
+
+	<!-- 插入用户： 1.由数据库生成id并赋值到user对象 2.输入用对象, 嵌套属性表达式#{team.id} -->
+	<insert id="save" parameterType="BCUser" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into vc_user (
+		login_name, name
+		<if test="uuid != null">
+			,uuid
+		</if>
+		<if test="password != null">
+			,password
+		</if>
+		<if test="salt != null">
+			,salt
+		</if>
+		<if test="insCode != null">
+			,ins_code
+		</if>
+		<if test="roles != null">
+			,roles
+		</if>
+		)
+		values (
+		#{loginName}, #{name}
+		<if test="uuid != null">
+			,#{uuid}
+		</if>
+		<if test="password != null">
+			, #{password}
+		</if>
+
+		<if test="salt != null">
+			,#{salt}
+		</if>
+		<if test="insCode != null">
+			,#{insCode}
+		</if>
+
+		<if test="roles != null">
+			,#{roles}
+		</if>
+		)
+	</insert>
+
+	<!-- 删除用户 -->
+	<delete id="delete" parameterType="long">
+		delete from vc_user where
+		id=#{id}
+	</delete>
+
+	<select id="findAll" parameterType="map" resultType="BCUser">
+		select id,
+		name,
+		login_name as loginName
+		from vc_user
+
+	</select>
+
+	<select id="findAll2" parameterType="map" resultMap="userResult">
+		select id, name,
+		login_name as loginName
+		from vc_user
+		<where>
+			<if test="name != null">
+				and name like #{name}
+			</if>
+		</where>
+	</select>
+
+	<select id="findAllBcUser" parameterType="map" resultType="BCUser">
+		select id, name,
+		login_name as loginName,
+		case roles 
+		when 'admin' then '超级管理员'
+		when 'creditreport' then '报告查询'
+		when 'fund' then '资金管理员'
+		when 'insdata' then '数据上传'
+		when 'account' then '账户管理'
+		else '' END as roles
+		,register_date as
+		registerDate ,allow,uuid
+		from vc_user
+		<where>
+
+			<if test="insCode != null and insCode !=''">
+
+				ins_code=#{insCode}
+			</if>
+			<!-- 'ora_bundcredit' -->
+		</where>
+
+		<!-- where login_name=#{insCode} -->
+	</select>
+	
+	<select id="findAllNoneAdminBcUser" parameterType="map" resultType="BCUser">
+		select id, name,
+		login_name as loginName,roles,register_date as
+		registerDate ,allow,uuid
+		from vc_user
+		where ins_code=#{insCode} and roles != 'admin'
+	</select>
+	
+	<update id="update" parameterType="BCUser">
+		UPDATE vc_user SET
+		<if test="name != null">
+			name=#{name},
+		</if>
+		password=#{password},salt=#{salt},last_login_time=#{lastLoginTime}
+		<where>
+			<if test="loginName != null">
+				login_name=#{loginName}
+			</if>
+			<if test="id != null">
+				and id=#{id}
+			</if>
+		</where>
+	</update>
+	<update id="updateuser" parameterType="BCUser">
+		UPDATE vc_user
+		<set>
+		    <if test="uuid != null">
+				uuid=#{uuid},
+			</if>
+			<if test="loginName != null">
+				login_name=#{loginName},
+			</if>
+			<if test="name != null">
+				name=#{name} ,
+			</if>
+			<if test="password != null">
+				password=#{password},
+			</if>
+			<if test="salt != null">
+				salt=#{salt},
+			</if>
+			<if test="insCode != null">
+				ins_code=#{insCode},
+			</if>
+			<if test="roles != null">
+				roles=#{roles},
+			</if>
+			<if test="lastLoginTime != null">
+				last_login_time=#{lastLoginTime}
+			</if>
+		</set>
+		<where>
+			id= #{id}
+		</where>
+	</update>
+	<update id="forbiddenUser" parameterType="map">
+		UPDATE vc_user SET allow=#{allow}
+		<where>
+			id= #{id}
+
+		</where>
+	</update>
+
+</mapper> 

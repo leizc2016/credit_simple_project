@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.pactera.pds.u2</groupId>
+	<artifactId>bundcredit</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>bundcredit :: Project</name>
+	<packaging>pom</packaging>
+
+	<description>bundcredit is a Spring Framework based JavaEE application reference architecture. </description>
+	<url>http://www.bundcredit.com</url>
+	<inceptionYear>2015-2016</inceptionYear>
+	<organization>
+		<name>bundcredit</name>
+		<url>http://www.bundcredit.com</url>
+	</organization>
+
+	<!-- 配置开发人员相关信息，便于生成site站点信息 -->
+	<developers>
+		<developer>
+			<id>zhengjian</id>
+			<name>Zheng Jian</name>
+			<email>jian.zheng2@pactera.com</email>
+			<organization>pactera</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+		<developer>
+			<id>lianjunsheng</id>
+			<name>LianJunSheng</name>
+			<email>junsheng.lian@pactera.com</email>
+			<organization>pactera</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+		<developer>
+			<id>zhangyi</id>
+			<name>ZhangYi</name>
+			<email>yi.zhang5@pactera.com</email>
+			<organization>pactera</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+		<developer>
+			<id>liuhailin</id>
+			<name>LiuHaiLin</name>
+			<email>hailin.liu@pactera.com</email>
+			<organization>pactera</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+		<developer>
+			<id>dengdongshan</id>
+			<name>DengDongShan</name>
+			<email>dongshan.deng@pactera.com</email>
+			<organization>pactera</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+8</timezone>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>parent</module>
+		<module>core</module>
+		<module>site</module>
+		<module>admin</module>
+  	</modules>
+
+	<!-- 此处可以添加相关是svn地址,便于持续集成 -->
+    <scm>
+        <url></url>
+        <connection></connection>
+        <developerConnection></developerConnection>
+    </scm>
+</project>

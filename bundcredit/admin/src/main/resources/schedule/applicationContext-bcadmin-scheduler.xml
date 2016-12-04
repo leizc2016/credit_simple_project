@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>使用Spring的 Scheduled的定时任务配置</description>
+	<bean id="insFileScanner" class="com.pactera.pds.u2.commerce.service.insdatamgr.InsFileScanner">
+		<property name="initMap">
+			<map>
+				<!-- 申请记录 -->
+				<entry key="1">
+					<value>idCardNum|idCardType|fullName|applyDatetime|applyAmount1|applyAmount2|applyType|approvalAmount1|approvalAmount2|loanAccount|loanStartDate|loanEndDate|applyProCity|homeAddr|selPhoneNum|applyIp|assType|assIDNum|assIDType|assName|comment1|comment2</value>
+				</entry>
+				<!-- 行为记录 -->
+				<entry key="2">
+					<value>id_card_num|id_card_type|full_name|loan_account|loan_balance_1|loan_balance_2|next_loan_reply_date|next_loan_reply_amt_1|next_loan_reply_amt_2|loan_status_1|loan_status_2|comment1|comment2</value>
+				</entry>
+				<!-- 历史数据回溯 -->
+				<entry key="3">
+					<value>id_card_num|id_card_type|full_name|apply_date|apply_amount_1|apply_amount_2|apply_type|approval_amount_1|approval_amount_2|loan_account|loan_start_date|loan_end_date|apply_pro_city|home_addr|sel_phone_num|apply_ip|loan_balance_1|loan_balance_2|next_loan_reply_date|next_loan_reply_amt_1|next_loan_reply_amt_2|loan_status_1|loan_status_2</value>
+				</entry>	
+				<!-- 备注信息-->
+				<entry key="4">
+					<value>idCardNum|idCardType|fullName|commentType|commentContent|commentTime</value>
+				</entry>
+			</map>
+		</property>
+		
+		<property name="initMap2">
+			<map>
+				<!-- 申请记录个数 -->
+				<entry key="1">
+					<value>20</value>
+				</entry>
+				<!-- 行为记录个数 -->
+				<entry key="2">
+					<value>10</value>
+				</entry>
+				<entry key="4">
+					<value>6</value>
+				</entry>				
+			</map>
+			
+		</property>
+	</bean>
+	<!-- namespace 方式 的便捷版 -->
+	<task:scheduler id="springScheduler" pool-size="2"/>
+	<task:scheduled-tasks scheduler="springScheduler">
+	    <!-- <task:scheduled ref="insUpFiles2TmpDBService" method="executeFileScanAndImport" fixed-rate="20000"/>-->
+	    <!-- <task:scheduled ref="insUpFiles2TmpDBService" method="executeFileScanAndValidate" fixed-rate="20000"/>-->
+	    <task:scheduled ref="insUpFiles2TmpDBService" method="executeValidateUploadedFileAndImportToTmpDB" fixed-rate="20000"/>
+	    <!-- <task:scheduled ref="restApiService" method="saveApply" fixed-rate="20000"/> -->
+	    <task:scheduled ref="insService" method="executeFileIntoProductDB" fixed-rate="20000"/>
+	    <task:scheduled ref="CSAsynSearchService" method="doCSAsynQuery" fixed-rate="20000"/>
+	    <!--<task:scheduled ref="JHHCrawlDataService" method="crawlData" fixed-rate="20000"/>-->
+	</task:scheduled-tasks>
+	 
+</beans> 

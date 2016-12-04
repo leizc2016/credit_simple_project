@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcHisYYSGEODao">
+
+<resultMap type="BcHisYYSGEO" id="BcHisYYSGEOMap">
+        <id property="id" column ="id"/>
+		<result property="callNum" column ="cell_num"/>
+		<result property="authCode" column ="auth_code"/>
+		<result property="userName" column ="user_name"/>
+		<result property="contactNum" column ="contact_num"/>
+		<result property="isMatch" column ="is_match"/>
+		<result property="netTime" column ="net_time"/>
+		<result property="spendingLevel" column ="spending_level"/>
+		<result property="workingSite" column ="working_site"/>
+		<result property="homeAddr" column ="home_addr"/>
+		<result property="contactRate" column ="contact_rate"/>
+    </resultMap>
+
+    <sql id="bcHisYYSGEOCols" >
+			id ,
+			cell_num,
+			auth_code,
+			user_name,
+			contact_num,
+			is_match,
+			net_time,
+			spending_level,
+			working_site,
+			home_addr,
+			contact_rate
+    </sql>
+	
+	<select id="queryBcHisYYSGEOById" resultMap="BcHisYYSGEOMap">
+    	select <include refid="bcHisYYSGEOCols"/> from bc_his_yys_geo
+    	where id=#{id}
+    </select>
+</mapper> 

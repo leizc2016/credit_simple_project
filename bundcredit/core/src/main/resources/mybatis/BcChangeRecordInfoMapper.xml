@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcChangeRecordsInfoDao">
+<resultMap type="ChangeRecordBean" id="BcChangeRecordInfoMap">
+        <id property="id" column ="id"/>
+		<result property="projectName" column ="project_name"/>
+		<result property="beforeContent" column ="before_content"/>
+		<result property="afterContent" column ="after_content"/>
+		<result property="changeDate" column ="change_date"/>
+		<result property="regId" column ="reg_id"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcChangeRecordInfoCols" >
+			id,
+			project_name,
+			before_content,
+			after_content,
+			change_date,
+			reg_id
+    </sql>
+	
+	<select id="queryBcChangeRecordByRegId" resultMap="BcChangeRecordInfoMap">
+    	select <include refid="BcChangeRecordInfoCols"/> from bc_change_record_info
+    	where reg_id=#{regId}
+    </select>
+    <insert id="saveBcChangeRecord" parameterType="ChangeRecordBean"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_change_record_info (
+			project_name,
+			before_content,
+			after_content,
+			change_date,
+			reg_id,
+			create_time,
+			update_time
+		)values (
+		#{projectName},#{beforeContent},#{afterContent},#{changeDate},#{regId},now(),now())
+	</insert>
+</mapper> 

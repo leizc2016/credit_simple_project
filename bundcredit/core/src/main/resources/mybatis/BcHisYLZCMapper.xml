@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcHisYLZCMybatisDao">
+	<resultMap type="BcHisYLZC" id="BcHisYLZCMap">
+        <id property="id" column="id"/>
+		<result property="idCardNum" column="id_card_num"/>
+		<result property="bankCardNum" column="bank_card_num"/>
+		<result property="bankCardType" column="bank_card_type"/>
+		<result property="authCode" column="auth_code"/>
+		<result property="recentLocation" column="recent_location"/>
+		<result property="commonLocation" column="common_location"/>
+		<result property="cstScore" column="cst_score"/>
+		<result property="chvScore" column="chv_score"/>
+		<result property="cotScore" column="cot_score"/>
+		<result property="cnpScore" column="cnp_score"/>
+		<result property="wlpScore" column="wlp_score"/>
+		<result property="rskScore" column="rsk_score"/>
+		<result property="cntScore" column="cnt_score"/>
+		<result property="cnaScore" column="cna_score"/>
+		<result property="dsiScore" column="dsi_score"/>
+		<result property="summaryScore" column="summary_score"/>
+		<result property="depositMoney12MonthsDetail" column="deposit_money_12_months_detail"/>
+		<result property="depositCount12MonthsDetail" column="deposit_count_12_months_detail"/>
+		<result property="consumeMoney12MonthsDetail" column="consume_money_12_months_detail"/>
+		<result property="consumeCount12MonthsDetail" column="consume_count_12_months_detail"/>
+		<result property="drawMoney12MonthsDetail" column="draw_money_12_months_detail"/>
+		<result property="drawCount12MonthsDetail" column="draw_count_12_months_detail"/>
+		<result property="transIn12MonthsDetail" column="trans_in_12_months_detail"/>
+		<result property="transInCount12MonthsDetail" column="trans_in_count_12_months_detail"/>
+		<result property="transOut12MonthsDetail" column="trans_out_12_months_detail"/>
+		<result property="transOutCount12MonthsDetail" column="trans_out_count_12_months_detail"/>
+    </resultMap>
+	
+       
+    <sql id="bcHisYLZCCols">
+    	id,id_card_num,bank_card_num,bank_card_type,auth_code,recent_location,common_location,cst_score,chv_score,cot_score,cnp_score,
+    	wlp_score,rsk_score,cnt_score,cna_score,dsi_score,summary_score,deposit_money_12_months_detail,
+    	deposit_count_12_months_detail,consume_money_12_months_detail,consume_count_12_months_detail,draw_money_12_months_detail,
+    	draw_count_12_months_detail,trans_in_12_months_detail,trans_in_count_12_months_detail,trans_out_12_months_detail,
+    	trans_out_count_12_months_detail
+    </sql>
+   
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultType="BcHisYLZC">
+		select 
+ 		<include refid="bcHisYLZCCols"/>
+		from bc_his_yl_zc
+	</select>
+	
+	<update id="updateBcHisYLZC" parameterType="BcHisYLZC" >
+	 update bc_his_yl_zc 
+	 set id_card_num=#{idCardNum},bank_card_num=#{bankCardNum},bank_card_type=#{bankCardType},
+	 	auth_code=#{authCode},common_location=#{commonLocation},recent_location=#{recentLocation},cst_score=#{cstScore},chv_score=#{chvScore},
+	 	cot_score=#{cotScore},cnp_score=#{cnpScore},wlp_score=#{wlpScore},rsk_score=#{rskScore},cnt_score=#{cntScore},
+		cna_score=#{cnaScore},dsi_score=#{dsiScore},summary_score=#{summaryScore},deposit_money_12_months_detail=#{depositMoney12MonthsDetail},
+		deposit_count_12_months_detail=#{depositCount12MonthsDetail},consume_money_12_months_detail=#{consumeMoney12MonthsDetail},
+		consume_count_12_months_detail=#{consumeCount12MonthsDetail},draw_money_12_months_detail=#{drawMoney12MonthsDetail},
+		draw_count_12_months_detail=#{drawCount12MonthsDetail},trans_in_12_months_detail=#{transIn12MonthsDetail},
+		trans_in_count_12_months_detail=#{transInCount12MonthsDetail},trans_out_12_months_detail=#{transOut12MonthsDetail},
+		trans_out_count_12_months_detail=#{transOutCount12MonthsDetail}
+	 where id=#{id}
+	</update>
+	
+    <insert id="saveBcHisYLZC" parameterType="BcHisYLZC" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_his_yl_zc (
+		id_card_num,bank_card_num,bank_card_type,auth_code,common_location,recent_location,cst_score,chv_score,cot_score,
+    	cnp_score,wlp_score,rsk_score,cnt_score,cna_score,dsi_score,summary_score,deposit_money_12_months_detail,
+    	deposit_count_12_months_detail,consume_money_12_months_detail,consume_count_12_months_detail,draw_money_12_months_detail,
+    	draw_count_12_months_detail,trans_in_12_months_detail,trans_in_count_12_months_detail,trans_out_12_months_detail,
+    	trans_out_count_12_months_detail)
+		values (
+		#{idCardNum},#{bankCardNum},#{bankCardType},#{authCode},#{commonLocation},#{recentLocation},#{cstScore},#{chvScore},#{cotScore},#{cnpScore},
+    	#{wlpScore},#{rskScore},#{cntScore},#{cnaScore},#{dsiScore},#{summaryScore},#{depositMoney12MonthsDetail},
+    	#{depositCount12MonthsDetail},#{consumeMoney12MonthsDetail},#{consumeCount12MonthsDetail},#{drawMoney12MonthsDetail},
+    	#{drawCount12MonthsDetail},#{transIn12MonthsDetail},#{transInCount12MonthsDetail},#{transOut12MonthsDetail},
+    	#{transOutCount12MonthsDetail}
+		)
+	</insert>
+	
+	<select id="getBcHisYLZCById" resultMap="BcHisYLZCMap">
+    	select * from bc_his_yl_zc 
+    	where id=#{id}
+    </select>
+    
+	<delete id="deleteBcHisYLZC" parameterType="long">
+		 delete from bc_his_yl_zc  
+		 where id=#{id}
+	</delete>
+	
+	<select id="checkAuthCode" parameterType="map" resultType="string">
+   		select DISTINCT c.bank_card_num from bc_his_yl_zc c
+   		left join bc_his h on c.id=h.condition_id
+   		left join vc_user u on u.id=h.user_id 
+		<where>
+			1=1
+			<if test="authCode!=null and authCode != ''" >
+				and c.auth_code = #{authCode}
+			</if>
+			<if test="insCode!=null and insCode != ''" >
+				and u.ins_code = #{insCode}
+			</if>
+		</where> 
+   	</select>
+</mapper> 

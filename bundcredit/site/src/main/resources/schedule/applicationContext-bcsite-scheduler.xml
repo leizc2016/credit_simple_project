@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+<!-- 
+	<description>使用Spring的 Scheduled的定时任务配置</description>
+	<task:scheduler id="springScheduler2" pool-size="2"/>
+	<task:scheduled-tasks scheduler="springScheduler2">
+	    <task:scheduled ref="schedulee" method="clearOutdateToken" fixed-rate="10000"/>
+	</task:scheduled-tasks>
+ -->
+	 <bean id="schedulee" class="com.pactera.pds.u2.commerce.utils.Schedulee">
+	    <!--10* 60*1000 = 600000 -->
+		<property name="deadtime" >
+		    <value>1200000</value>
+		</property>
+	</bean>	
+</beans> 

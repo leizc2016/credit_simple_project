@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcPartnerInfoDao">
+<resultMap type="PartnerInformationBean" id="BcPartnerInfoMap">
+        <id property="id" column ="id"/>
+		<result property="partnerName" column ="partner_name"/>
+		<result property="partnerType" column ="partner_type"/>
+		<result property="regId" column ="reg_id"/>
+		<result property="identifyType" column ="identify_type"/>
+		<result property="identifyNo" column ="identify_no"/>
+		<result property="realCapi" column ="real_capi"/>
+		<result property="capiDate" column ="capi_date"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcPartnerInfoCols" >
+			id,
+			partner_name,
+			partner_type,
+			reg_id,
+			identify_type,
+			identify_no,
+			real_capi,
+			capi_date
+    </sql>
+	
+	<select id="queryBcPartnerInfoByRegId" resultMap="BcPartnerInfoMap">
+    	select <include refid="BcPartnerInfoCols"/> from bc_partner_info
+    	where reg_id=#{param}
+    </select>
+    <insert id="saveBcPartnerInfo" parameterType="PartnerInformationBean"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_partner_info (
+			partner_name,
+			partner_type,
+			reg_id,
+			identify_type,
+			identify_no,
+			real_capi,
+			capi_date,
+			create_time,
+			update_time
+		)values (
+		#{partnerName},#{partnerType},#{regId},#{identifyType},#{identifyNo},#{realCapi},#{capiDate},now(),now())
+	</insert>
+</mapper> 

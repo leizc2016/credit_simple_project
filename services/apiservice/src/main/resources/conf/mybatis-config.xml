@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 命名空间 -->
+ 	<settings>
+        <setting name="cacheEnabled" value="false" />
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 启用mybatis列名自动匹配user_name,userName,username相似匹配 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+	
+	<!-- <typeAliases>
+         <typeAlias alias="Product" type="cn.springmvc.model.Product"/>
+    </typeAliases> -->
+
+    <plugins>
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins> 
+     
+    <!-- 映射map -->
+    <mappers>
+    </mappers>
+</configuration>

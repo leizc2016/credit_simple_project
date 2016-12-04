@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.InstitutionMybatisDao">
+	
+	<resultMap type="Institution" id="institution">
+        <id property="insCode" column="ins_code" />
+        <result property="name" column="name" />
+        <result property="lineOfCredit" column="line_of_credit" />
+        <result property="balance" column="balance" />
+        <result property="cashBalance" column="cash_balance" />
+        <result property="cashCredit" column="cash_credit" />
+        <result property="productCode" column="product_code" />
+    </resultMap>
+	<resultMap type="InsitutionTransaction" id="transLog">
+        <id property="id" column="id" />
+        <result property="transType" column="trans_type" />
+        <result property="insAccId" column="ins_acc_id" />
+        <result property="description" column="description" />
+        <result property="transDateTime" column="trans_datetime" />
+        <result property="fee" column="fee" />
+        <result property="device" column="device" />
+        <result property="comments" column="comments" />
+        <result property="insCode" column="ins_code" />
+        <result property="opName" column="op_name" />
+        <result property="ipAddr" column="ip_addr" />
+        <result property="balance" column="balance" />
+        
+    </resultMap> 
+   	 <sql id="cols">ins_code,name,line_of_credit,balance, cash_balance, cash_credit, product_code</sql>
+   	
+   	<select id="allTrans" resultMap="transLog">
+   		select * from bc_ins_transaction_log ORDER BY trans_datetime DESC
+   	</select>
+   	
+   	<select id="findTransactionsByConditions" parameterType="map" resultMap="transLog">
+   		select * from bc_ins_transaction_log 
+		<where>
+			1=1
+			<if test="transDateTimefrom!=null and transDateTimefrom != ''" >
+			and trans_datetime &gt;= #{transDateTimefrom}
+			</if>
+			<if test="transDateTimeto!=null and transDateTimeto != ''" >
+			and trans_datetime &lt;= #{transDateTimeto}
+			</if>
+			<if test="insCode!=null and insCode!='' and inscode != '_'">
+			and ins_code=#{insCode}
+			</if>
+			<if test="opName!=null and opName!=''">
+			and op_name=#{opName}
+			</if>
+		</where> 
+		ORDER BY trans_datetime DESC  
+   	</select>
+   	
+   	<select id="allTransByInsCode" resultMap="transLog">
+   		select * 
+   		  from bc_ins_transaction_log 
+   		 where ins_code=#{insCode} 
+   	  order by trans_datetime desc	 
+   	</select>
+   	
+  	<insert id="logTran" parameterType="InsitutionTransaction" useGeneratedKeys="true" keyProperty="id">
+		insert into bc_ins_transaction_log (
+		id,trans_type,ins_acc_id,description,trans_datetime,fee,device,comments,ins_code,op_name,ip_addr, balance)
+		values (#{id},#{transType},#{insAccId},#{description},
+		#{transDateTime},#{fee},#{device},#{comments},#{insCode},#{opName},#{ipAddr},#{balance})
+	</insert>
+	
+	<select id="findAll"  resultMap="institution">
+		select 
+		<include refid="cols"></include> 
+		from bc_institution
+	</select>
+	
+	<select id="get" parameterType="String" resultMap="institution">
+		select <include refid="cols"></include>  
+		from bc_institution
+		where ins_code=#{insCode}
+	</select>
+	<resultMap type="InsProdPrice" id="institutionDiscountResult">
+        <result property="prodCode" column="product_code" />
+        <result property="prodName" column="name" />
+        <result property="queryDiscount" column="query_discount" />
+        <result property="insProdPriceId" column="ins_prod_price_id" />
+        <result property="defaultFlag" column="default_flag" />
+    </resultMap>
+	<sql id="institutionDiscountCols">p.id, p.name,p.product_code, pp.query_discount,pp.prod_code as ins_prod_price_id,pp.default_flag</sql>
+	<select id="getProductPriceByIns" parameterType="String"   resultMap="institutionDiscountResult">
+		select 
+		<include refid="institutionDiscountCols"></include> 
+		FROM bc_product p 
+		LEFT JOIN bc_ins_prod_price pp on pp.prod_code=p.product_code and pp.ins_code=#{insCode}
+	</select>
+	
+	<update id="updateInsProdPrice">
+		update bc_ins_prod_price set query_discount = #{2},default_flag=#{3}
+		WHERE ins_code=#{1} and prod_code = #{0}
+	</update>
+	
+	<update id="updateInsProdPrice1">
+		update bc_ins_prod_price set query_discount = #{2}
+		WHERE ins_code=#{1} and prod_code = #{0}
+	</update>
+	
+    <insert id="insertInsProdPrice" >
+		INSERT INTO bc_ins_prod_price (prod_code, ins_code, query_discount,default_flag) 
+     		VALUES(#{0}, #{1}, #{2},#{3})
+	</insert>
+		<select id="getDefaultISP" parameterType="String" resultType="String">
+		SELECT prod_code
+		  FROM bc_ins_prod_price
+		 WHERE ins_code=#{insCode} 
+		   AND default_flag=1
+		   AND prod_code LIKE 'YYSCX%'
+	</select>
+	
+
+	<insert id="save" parameterType="institution">
+		insert into bc_institution (<include refid="cols"></include> )
+		values (
+		#{insCode},#{name},#{lineOfCredit},#{balance},#{cashBalance},#{cashCredit},#{productCode})
+	</insert>
+	
+	<update id="update" parameterType="institution">
+		UPDATE bc_institution SET 
+		name=#{name},product_code=#{productCode},
+		balance=#{balance},line_of_credit=#{lineOfCredit},
+		cash_balance=#{cashBalance},cash_credit=#{cashCredit}
+		where ins_code=#{insCode}
+	</update>
+		
+	<update id="addBalance">
+		UPDATE bc_institution SET 
+		balance=balance+#{1}, cash_balance=cash_balance+#{2} where ins_code=#{0}
+	</update>
+	
+	<update id="updateCredit">
+		UPDATE bc_institution SET 
+		line_of_credit=#{1}, cash_credit=#{2} where ins_code=#{0}
+	</update>	
+	
+	<delete id="deleteInsProdPrice">
+	 	 delete from bc_ins_prod_price WHERE ins_code=#{0} and prod_code = #{1}
+	</delete>
+</mapper> 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="/WEB-INF/layouts/">
+	<excludes>
+		<pattern>/static/*</pattern>
+		<pattern>/api/*</pattern>
+		<pattern>/login/pass</pattern>
+	</excludes>
+
+	<decorator name="main" page="main.jsp">
+		<pattern>/insadmin/*</pattern>
+		<pattern>/creditadmin/*</pattern>
+		<pattern>**/profile</pattern>
+		<pattern>**/profile/account/profile/**</pattern>
+		<pattern>/user_Safeguard</pattern>
+		<pattern>/user_Safeguard/*</pattern>
+		<pattern>/admin/user</pattern>
+		<pattern>/admin/user/*</pattern>
+		<pattern>/admin/product</pattern>
+		<pattern>/admin/product/*</pattern>
+		<pattern>/login/welcome</pattern>
+	</decorator>
+	 <decorator name="default" page="default.jsp">
+		<pattern>/*</pattern>
+	</decorator> 
+</decorators>

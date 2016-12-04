@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcCourtDishonestExecutorDao">
+<resultMap type="DishPersonBean" id="BcCourtDishonestExecutorMap">
+        <id property="id" column ="id"/>
+		<result property="name" column ="name"/>
+		<result property="legalPerson" column ="legal_person"/>
+		<result property="code" column ="code"/>
+		<result property="basisDocNo" column ="basis_docNo"/>
+		<result property="caseCode" column ="case_code"/>
+		<result property="basisDept" column ="basis_dept"/>
+		<result property="docContent" column ="doc_content"/>
+		<result property="execStatus" column ="exec_status"/>
+		
+		<result property="execCourt" column ="exec_court"/>
+		<result property="province" column ="province"/>
+		<result property="filingTime" column ="filing_time"/>
+		<result property="publishDate" column ="publish_date"/>
+		
+		<result property="businessName" column ="business_name"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcCourtDishonestExecutorCols" >
+			id,
+			name,
+			legal_person,
+			code,
+			basis_docNo,
+			case_code,
+			basis_dept,
+			doc_content,
+			exec_status,
+			exec_court,
+			province,
+			filing_time,
+			publish_date,
+			business_name,
+			create_time,
+			update_time
+    </sql>
+	
+	<select id="queryBcCourtDishonestExecutorByBusinessName" resultMap="BcCourtDishonestExecutorMap">
+    	select <include refid="BcCourtDishonestExecutorCols"/> from bc_court_dishonest_executor
+    	where 1=1 
+    	<if test="code!=null and code !=''"> and code=#{code}</if> 
+    	<if test="businessName!=null and businessName !=''"> and business_name=#{businessName}</if>
+    </select>
+	
+    <insert id="saveBcCourtDishonestExecutor" parameterType="DishPersonBean"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_court_dishonest_executor (name,
+			legal_person,
+			code,
+			basis_docNo,
+			case_code,
+			basis_dept,
+			doc_content,
+			exec_status,
+			exec_court,
+			province,
+			filing_time,
+			publish_date,
+			business_name,
+			create_time,
+			update_time
+		)
+		values (
+		#{name},#{legalPerson},#{code},#{basisDocNo},#{caseCode},#{basisDept},#{docContent},#{execStatus},#{execCourt},#{province}
+		,#{filingTime},#{publishDate},#{businessName},now(),now())
+	</insert>
+</mapper> 

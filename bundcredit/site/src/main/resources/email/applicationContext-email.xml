@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
+	default-lazy-init="true">
+
+	<description>Email配置</description>
+
+	<!-- MIME邮件服务类 -->
+	<bean id="mimeMailService" class="com.pactera.pds.u2.commerce.utils.MimeMailService">
+		<property name="mailSender" ref="mailSender" />
+		<property name="freemarkerConfiguration" ref="freemarkerConfiguration" />
+	</bean>
+
+	<!-- 用于生成HTML邮件内容的Freemarker配置 -->
+	<bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+		<property name="templateLoaderPath" value="classpath:/email" />
+	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.service.genomics.cn" />
+		<property name="username" value="bgi" />
+		<property name="password" value="BGIweb123$" />
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

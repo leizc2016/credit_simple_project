@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcHisMybatisDao">
+
+	<resultMap type="BcHis" id="BcHisMap">
+        <id property="id" column="id" />
+        <result property="queryDate" column="query_date" />
+        <result property="queryCondition" column="query_condition" />
+        <result property="productCode" column="product_code" />
+        <result property="productCode2nd" column="product_code_2nd" />
+        <result property="flag" column="flag" />
+        <result property="conditionId" column="condition_id" />
+        <result property="userId" column="user_id" />
+        <result property="queryType" column="query_type" />
+    </resultMap>
+	
+       
+    <sql id="bcHisCols">
+    	id,query_date,query_condition,product_code,product_code_2nd,flag,condition_id,user_id,query_type
+    </sql>
+   
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultType="BcHis">
+		select 
+ 		<include refid="bcHisCols"/>
+		from bc_his
+	</select>
+	
+	<select id="findIncompleteCSRecords" resultType="BcHis">
+		select 
+ 		<include refid="bcHisCols"/>
+		from bc_his
+		where product_code='YYSCX_CS' and product_code_2nd='CS' and flag=1
+		ORDER BY query_date ASC
+	</select>
+	
+	<update id="updateBcHis" parameterType="BcHis" >
+	 update bc_his 
+	 set query_date=#{queryDate}
+	   , query_condition=#{queryCondition}, product_code=#{productCode}
+	   , product_code_2nd=#{productCode2nd} , flag=#{flag}
+	   , condition_id=#{conditionId},user_id=#{userId},query_type=#{queryType}
+	 where id=#{id}
+	</update>
+	
+    <insert id="saveBcHis" parameterType="BcHis" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_his (
+		query_date,query_condition,product_code,product_code_2nd,flag,condition_id,user_id,query_type)
+		values (
+		#{queryDate},#{queryCondition},#{productCode},#{productCode2nd},#{flag},#{conditionId},#{userId},#{queryType})
+	</insert>
+	
+	<select id="getBcHisById" resultMap="BcHisMap">
+    	select * from bc_his 
+    	where id_card_num=#{idCardNum}
+    </select>
+    
+    <select id="getBcHisByConditionId" resultMap="BcHisMap" parameterType="map">
+    	select * from bc_his 
+    	where condition_id=#{conditionId}
+    	  and product_code=#{productCode}
+    </select>
+    
+	<delete id="deleteBcHis" parameterType="long">
+		 delete from bc_his  
+		 where id=#{id}
+	</delete>
+	
+</mapper> 

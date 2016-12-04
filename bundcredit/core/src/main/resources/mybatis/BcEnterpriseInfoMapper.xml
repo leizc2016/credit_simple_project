@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcEnterpriseInfoDao">
+<resultMap type="BusinessInfoBean" id="BcEnterpriseInfoMap">
+        <id property="regID" column ="reg_id"/>
+		<result property="name" column ="name"/>
+		<result property="type" column ="type"/>
+		<result property="legalPerson" column ="legal_person"/>
+		<result property="registeredCapital" column ="registered_capital"/>
+		<result property="address" column ="address"/>
+		<result property="city" column ="city"/>
+		<result property="bureau" column ="bureau"/>
+		<result property="state" column ="state"/>
+		<result property="scope" column ="scope"/>
+		<result property="setupDate" column ="set_up_date"/>
+		<result property="operatingPeriod" column ="operating_period"/>
+		<result property="awardDate" column ="award_date"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcEnterpriseInfoCols" >
+			reg_id,
+		name,
+		type,
+		legal_person,
+		registered_capital,
+		address,
+		city,
+		bureau,
+		state,
+		scope,
+		set_up_date,
+		operating_period,
+		award_date,create_time,update_time
+    </sql>
+	
+	<select id="queryBcEnterpriseInfoById" resultMap="BcEnterpriseInfoMap">
+    	select <include refid="BcEnterpriseInfoCols"/> from bc_enterprise_info
+    	where reg_id=#{id}
+    </select>
+
+    <insert id="saveBcEnterpriseInfo" parameterType="BusinessInfoBean">
+		INSERT INTO bc_enterprise_info (reg_id,
+		name,
+		type,
+		legal_person,
+		registered_capital,
+		address,
+		city,
+		bureau,
+		state,
+		scope,
+		set_up_date,
+		operating_period,
+		award_date,create_time,update_time
+		)
+		values (
+		#{regID},#{name},#{type},#{legalPerson},#{registeredCapital},#{address},#{city},#{bureau},#{state},#{scope}
+		,#{setupDate},#{operatingPeriod},#{awardDate},now(),now())
+	</insert>
+</mapper> 

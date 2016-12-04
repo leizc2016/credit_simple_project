@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.InstitutionUploadedFileMybatisDao">
+	
+	<resultMap type="InstitutionUploadedFile" id="insUploadFile">
+        <id property="id" column="id" />
+        <result property="uploadDatetime" column="upload_datetime" />
+        <result property="insCode" column="ins_code" />
+        <result property="insAccId" column="ins_acc_id" />
+        <result property="fileName" column="filename" />
+        <result property="fileUqKey" column="file_uq_key" />
+        <result property="valAmt" column="val_amt" />
+        <result property="fileType" column="file_type" />
+        <result property="fileStatus" column="file_status" />
+        <result property="isEnter"  column="inenter"/>
+        <result property="uploadman"  column="uploadman"/>
+    </resultMap>
+   	 <sql id="colsWithOutId">upload_datetime,ins_code,ins_acc_id,filename,file_uq_key,
+    	val_amt,file_type,file_status,validation_log,isenter
+    </sql>
+    <sql id="cols">id,<include refid="colsWithOutId"></include>
+    </sql>
+	<select id="findAll"  resultMap="insUploadFile">
+		select 
+				up.id,
+				upload_datetime,
+				up.ins_code,
+				ins_acc_id,
+				filename,
+				file_uq_key,
+    			val_amt,file_type,
+    			file_status,
+    			validation_log,
+    			isenter, 
+    			u.name as uploadman
+		 from bc_ins_data_upload up
+	LEFT JOIN vc_user u ON u.id = ins_acc_id
+	 ORDER BY upload_datetime DESC
+	</select>
+	
+	<select id="findCondition" parameterType="map" resultMap="insUploadFile">
+		select 
+				up.id,
+				upload_datetime,
+				up.ins_code,
+				ins_acc_id,
+				filename,
+				file_uq_key,
+    			val_amt,file_type,
+    			file_status,
+    			validation_log,
+    			isenter, 
+    			u.name as uploadman
+		 from bc_ins_data_upload up
+	LEFT JOIN vc_user u ON u.id = ins_acc_id
+	<where>
+	1=1
+		<if test="upload_datetime!=null">
+		and upload_datetime=#{uploadDatetime}
+		<!-- upload_datetime like  '%${uploadDatetime}%'  -->
+		</if>
+		<if test="insCode!=null and insCode!=''">
+		and up.ins_code like  '%${insCode}%'
+		</if>
+		<if test="uploadman!=null and uploadman!=''">
+		and u.name like  '%${uploadman}%'
+		</if>
+		<if test="fileType!=null">
+		and file_type=#{fileType}
+		</if>
+	</where>
+	 ORDER BY upload_datetime DESC
+	</select>
+	<select id="get" parameterType="long" resultMap="insUploadFile">
+		select <include refid="cols"/> 
+		from bc_ins_data_upload
+		where id=#{id}
+	</select>
+		
+
+	<select id="findByInsCode" parameterType="String" resultMap="insUploadFile">
+		select 
+				up.id,
+				upload_datetime,
+				up.ins_code,
+				ins_acc_id,
+				filename,
+				file_uq_key,
+    			val_amt,file_type,
+    			file_status,
+    			validation_log,
+    			isenter, 
+    			u.name as uploadman
+		from bc_ins_data_upload up
+		LEFT JOIN vc_user u ON u.id = ins_acc_id 
+		where up.ins_code=#{insCode}
+		ORDER BY upload_datetime DESC
+	</select>
+	
+	<select id="findByInsCode4page" parameterType="String" resultMap="insUploadFile">
+		select 
+				up.id,
+				upload_datetime,
+				up.ins_code,
+				ins_acc_id,
+				filename,
+				file_uq_key,
+				val_amt,file_type,
+				file_status,
+				validation_log,
+				isenter, 
+				u.name as uploadman
+		from bc_ins_data_upload up
+		LEFT JOIN vc_user u ON u.id = ins_acc_id 
+		where up.ins_code=#{insCode}
+		ORDER BY upload_datetime DESC
+	</select>
+	
+	<select id="findByUploadTimeAsc" parameterType="Integer" resultMap="insUploadFile">
+		select <include refid="cols"/> 
+		from bc_ins_data_upload 
+		where file_status=#{fileStatus} 
+		ORDER BY upload_datetime ASC 
+		limit 1
+	</select>
+	<!-- 插入用户： 1.由数据库生成id并赋值到user对象 2.输入用对象, 嵌套属性表达式#{team.id} -->
+	<insert id="save" parameterType="InstitutionUploadedFile" useGeneratedKeys="true" keyProperty="id">
+		insert into bc_ins_data_upload (
+		<include refid="colsWithOutId"/>)
+		values (
+		#{uploadDatetime},#{insCode},#{insAccId},#{fileName},#{fileUqKey},
+    	#{valAmt},#{fileType},#{fileStatus},#{validationLog},#{isEnter})
+	</insert>
+	
+	<update id="updateFileValue">
+		UPDATE bc_ins_data_upload SET 
+		val_amt=#{1} where id=#{0}
+	</update>
+	
+	<update id="updateFileStatus">
+		UPDATE bc_ins_data_upload SET 
+		file_status=#{0} where id=#{1}
+	</update>
+	
+	<update id="updateFileLog">
+		UPDATE bc_ins_data_upload SET 
+		validation_log=#{0} where id=#{1}
+	</update>
+	<update id="updateFileState">
+		UPDATE bc_ins_data_upload SET 
+		isenter=#{0} where id=#{1}
+	</update>
+	<select id="hasItem4FailedApply"  resultType="int">
+		select count(*) 
+		  from bc_person_apply_detail 
+		 where id_card_type = #{0} AND id_card_num = #{1} AND ins_code = #{2} AND 
+		   apply_datetime = #{3} 
+	</select>
+	
+	<select id="hasItem4SuccessfulApply"  resultType="int">
+		select count(*) 
+		  from bc_person_apply_detail 
+		 where id_card_type = #{0} AND id_card_num = #{1} AND ins_code = #{2} AND 
+		   loan_account = #{3} 
+	</select>
+	
+	<select id="hasItem4AccountDetail"  resultType="int">
+		select count(*) 
+		  from bc_person_acc_detail
+		 where id_card_type = #{0} AND id_card_num = #{1} AND ins_code = #{2} AND 
+		       next_loan_repay_date >= #{3}  and loan_acc_id =#{4}
+	</select>
+	
+	<select id="hasItem4comment"  resultType="int">
+		select count(*) 
+		  from bc_bund_person_comment
+		 where id_card_type = #{0} AND id_card_num = #{1} AND ins_code = #{2} AND 
+		       comment_time >= #{3}
+	</select>
+	
+	<select id="findAvaliableFiles" resultMap="insUploadFile">
+		select 
+				up.id,
+				upload_datetime,
+				up.ins_code,
+				ins_acc_id,
+				filename,
+				file_uq_key,
+    			val_amt,file_type,
+    			file_status,
+    			validation_log,
+    			isenter, 
+    			u.name as uploadman
+		 from bc_ins_data_upload up
+	LEFT JOIN vc_user u ON u.id = ins_acc_id
+	    where up.file_status not in (202,203,206,301,302,402)
+	 ORDER BY upload_datetime DESC
+	</select>
+</mapper> 

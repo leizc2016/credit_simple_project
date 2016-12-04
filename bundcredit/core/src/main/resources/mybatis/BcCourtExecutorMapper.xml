@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcCourtExecutorDao">
+<resultMap type="BeExecutorBean" id="BcCourtExecutorMap">
+        <id property="id" column ="id"/>
+		<result property="name" column ="name"/>
+		<result property="execCourt" column ="exec_court"/>
+		<result property="code" column ="code"/>
+		<result property="filingTime" column ="filing_time"/>
+		<result property="caseCode" column ="case_code"/>
+		
+		<result property="executiveSubject" column ="executive_subject"/>
+		<result property="businessName" column ="business_name"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+
+    <sql id="bcCourtExecutorCols" >
+				id,
+				name,
+				exec_court,
+				code,
+				filing_time,
+				case_code,
+				executive_subject,
+				business_name,
+				create_time,
+				update_time
+    </sql>
+	
+	<select id="queryBcCourtExecutorByBusinessName" resultMap="BcCourtExecutorMap">
+    	select <include refid="bcCourtExecutorCols"/> from bc_court_executor
+    	where business_name=#{param}
+    </select>
+    
+    <select id="queryBcCourtExecutorByCode" resultMap="BcCourtExecutorMap">
+    	select <include refid="bcCourtExecutorCols"/> from bc_court_executor
+    	where code=#{param}
+    </select>
+
+    <insert id="saveBcCourtExecutor" parameterType="BeExecutorBean" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_court_executor (
+				name,
+				exec_court,
+				code,
+				filing_time,
+				case_code,
+				executive_subject,
+				business_name,
+				create_time,
+				update_time
+		)
+		values (
+		#{name},#{execCourt},#{code},#{filingTime},#{caseCode},#{executiveSubject},#{businessName},now(),now())
+	</insert>
+</mapper> 

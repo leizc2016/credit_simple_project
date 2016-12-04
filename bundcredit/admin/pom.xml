@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.pactera.pds.u2</groupId>
+		<artifactId>bundcredit-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../parent/</relativePath>
+	</parent>
+	<groupId>com.pactera.pds.u2</groupId>
+	<artifactId>bundcredit-admin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>bundcredit admin site</name>
+
+	<properties>
+	
+		<!-- 项目属性 -->
+		<!--  
+		<jdbc.driver.groupId>com.h2database</jdbc.driver.groupId>
+		<jdbc.driver.artifactId>h2</jdbc.driver.artifactId>
+		<jdbc.driver.version>${h2.version}</jdbc.driver.version>
+		 -->
+		 
+			<jdbc.driver.groupId>mysql</jdbc.driver.groupId>
+			<jdbc.driver.artifactId>mysql-connector-java</jdbc.driver.artifactId>
+			<jdbc.driver.version>5.1.22</jdbc.driver.version>
+		 
+	</properties>
+
+	<prerequisites>
+  		<maven>3.0.0</maven>
+	</prerequisites>
+
+	<!-- 依赖项定义 -->
+	<dependencies>
+		<dependency>
+			<groupId>com.pactera.pds.u2</groupId>
+			<artifactId>bundcredit-core</artifactId>
+		</dependency>
+		
+		<!--SPRING email/scheduler/freemarker -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<!-- SPRING basic end -->
+		
+		<!-- AOP begin -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+		</dependency>
+		<!-- AOP end -->
+		
+		<!-- SPRINGSIDE -->
+		<dependency>
+			<groupId>org.springside</groupId>
+			<artifactId>springside-core</artifactId>
+		</dependency>
+
+		<!-- PERSISTENCE begin -->
+		<!-- hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+		</dependency>
+		
+		<!-- mybatis , 包含物理分页插件-->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+		</dependency>
+
+		<dependency>
+	        <groupId>com.github.miemiedev</groupId>
+	        <artifactId>mybatis-paginator</artifactId>
+	    </dependency>
+	    
+		<!-- spring data access -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
+
+		<!-- connection pool -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+		</dependency>
+
+		<!-- jdbc driver -->
+		<dependency>
+			<groupId>${jdbc.driver.groupId}</groupId>
+			<artifactId>${jdbc.driver.artifactId}</artifactId>
+			<version>${jdbc.driver.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- PERSISTENCE end -->
+		
+		<!-- WEB begin -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>sitemesh</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<!-- WEB end -->
+
+		<!-- SECURITY begin -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+		</dependency>
+		<!-- SECURITY end -->
+
+		<!-- JSR303 BeanValidator -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+		</dependency>
+
+		<!-- JSON begin -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jaxb-annotations</artifactId>
+		</dependency>
+		<!-- JSON end -->
+
+		<!-- LOGGING begin -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+         <dependency>
+			 <groupId>org.logback-extensions</groupId>
+			 <artifactId>logback-ext-spring</artifactId>
+			 <scope>runtime</scope>
+	     </dependency>
+		<!-- 代码直接调用log4j会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- 代码直接调用common-logging会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- 代码直接调用java.util.logging会被桥接到slf4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.log4jdbc</groupId>
+			<artifactId>log4jdbc</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- LOGGING end -->
+
+		<!-- GENERAL UTILS begin -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+		</dependency>
+		<!-- GENERAL UTILS end -->
+
+		<!-- OTHER TOOLS begin -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>fluent-hc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.dozer</groupId>
+			<artifactId>dozer</artifactId>
+		</dependency>
+
+		<!-- email -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		<!-- OTHER TOOLS end -->
+		
+		<!-- TEST begin -->
+		<dependency>
+			<groupId>org.springside</groupId>
+			<artifactId>springside-core</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- h2  如果生产数据库不是H2，解开下面的注释 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+
+		<!-- jetty -->
+		<dependency>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- TEST end -->
+		
+		<!-- 添加oracle jdbc driver 
+	    <dependency>    
+	        <groupId>com.oracle</groupId>    
+	        <artifactId>ojdbc14</artifactId>    
+	        <version>11.2.0</version>
+	    </dependency>
+	    -->  
+	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>${spring.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.sf.ehcache</groupId>
+				<artifactId>ehcache-core</artifactId>
+				<version>2.6.9</version>
+			</dependency>
+				<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<!-- YUI Compressor Maven压缩插件 -->
+			<plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>yuicompressor-maven-plugin</artifactId>
+                <version>1.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compress</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 读取js,css文件采用UTF-8编码 -->
+                    <encoding>UTF-8</encoding>
+                    <!-- 不显示js可能的错误 -->
+                    <jswarn>false</jswarn>
+                    <!-- 若存在已压缩的文件，会先对比源文件是否有改动, 有改动便压缩，无改动就不压缩 -->
+                    <force>false</force>
+                    <!-- 在指定的列号后插入新行 -->  
+					<linebreakpos>-1</linebreakpos>  
+					<!-- 压缩之前先执行聚合文件操作 -->  
+					<preProcessAggregates>true</preProcessAggregates>  
+					<!-- 压缩后保存文件后缀 -->  
+					<suffix>.min</suffix>  
+					<!-- 源目录，即需压缩的根目录 -->  
+					<sourceDirectory>${basedir}/src/main/webapp/static</sourceDirectory>  
+					<!-- 压缩js和css文件 -->  
+					<includes>  
+					    <include>**/*.js</include>  
+					    <include>**/*.css</include>  
+					</includes>  
+					<!-- 以下目录和文件不会被压缩 -->  
+					<excludes>  
+						<exclude>**/admincss/**</exclude>  
+					    <exclude>**/*.min.js</exclude>  
+					    <exclude>**/*.min.css</exclude>  
+					</excludes>  
+					<!-- 压缩后输出文件目录 -->  
+					<outputDirectory>${basedir}/src/main/webapp/static/min</outputDirectory>  
+					
+                </configuration>
+            </plugin>
+            
+			<!-- 增加functional test的Source目录 -->
+
+			<!-- test插件, 设定內存 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-Xmx256M</argLine>
+				</configuration>
+			</plugin>
+
+			<!-- cobertura插件, 取消不需要计算覆盖率的类 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<instrumentation>
+						<excludes>
+							<exclude>**/entity/*.class</exclude>
+							<exclude>**/dto/*.class</exclude>
+							<exclude>**/*Controller.class</exclude>
+							<exclude>**/*Demo.class</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+			</plugin>
+			<!-- Maven的资源过滤插件将会在构建期间替换web.xml里的占位符 -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			        <artifactId>maven-war-plugin</artifactId>
+			        <configuration>
+			            <webResources>
+		                    <resource>
+		                        <filtering>true</filtering>
+		                        <directory>src/main/webapp</directory>
+		                        <includes>
+		                            <include>**/web.xml</include>
+		                        </includes>
+		                    </resource>
+		                </webResources>
+		                <warSourceDirectory>src/main/webapp</warSourceDirectory>
+		                <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+			        </configuration>
+			</plugin>
+			<!-- jetty插件, 设定context path与spring profile -->
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<systemProperties>
+						<systemProperty>
+							<name>spring.profiles.active</name>
+							<value>development</value>
+						</systemProperty>
+					</systemProperties>
+					<useTestClasspath>true</useTestClasspath>
+					<webAppConfig>
+						<contextPath>/vanke</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin>
+
+			<!-- tomcat7 插件 -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<configuration>
+					<systemProperties>
+						<spring.profiles.active>development</spring.profiles.active>
+					</systemProperties>
+					<useTestClasspath>true</useTestClasspath>
+				</configuration>
+			</plugin>
+
+			<!-- enforcer插件, 规则统一定义在parent -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- 开发环境，默认激活 -->
+	    <profile>
+	        <id>development</id>
+	        <activation>
+	            <!-- 默认启用的是dev环境配置 -->
+	            <activeByDefault>true</activeByDefault>
+	        </activation>
+	        <properties>
+	            <profiles.active>development</profiles.active>
+	        </properties>
+	    </profile>
+	    
+	    <!-- 部署环境 -->
+	    <profile>
+	        <id>production</id>
+	        <properties>
+	            <profiles.active>production</profiles.active>
+	        </properties>
+	    </profile>
+		<!-- 刷新开发环境数据库 -->
+		<profile>
+			<id>refresh-db</id>
+			<build>
+				<plugins>
+					<plugin>
+		                <groupId>org.codehaus.mojo</groupId>
+		                <artifactId>exec-maven-plugin</artifactId>
+		                <executions>
+		                    <execution>
+		                        <goals>
+		                            <goal>java</goal>
+		                            </goals>
+		                    </execution>
+		                </executions>
+		                <configuration>
+		                    <mainClass>org.h2.tools.Server</mainClass>
+		                    <arguments>
+		                        <argument>-tcp</argument>
+			                    <argument>-web</argument>
+	                            <argument>-webPort</argument>
+	                            <argument>8090</argument>
+	                            <argument>-browser</argument>
+		                    </arguments>
+		                </configuration>
+		            </plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<configuration>
+							<target>
+								<property file="src/main/resources/application.development.properties" />
+								<property file="src/main/resources/application.properties" />
+								<sql driver="${jdbc.driver}" url="${jdbc.url}" userid="${jdbc.username}" password="${jdbc.password}" onerror="continue" encoding="${project.build.sourceEncoding}">
+									<classpath refid="maven.test.classpath" />
+									<transaction src="src/main/resources/sql/${sql.file.prefix}/schema.sql" />
+									<transaction src="src/test/resources/data/${sql.file.prefix}/import-data.sql" />
+								</sql>
+								<sql driver="${jdbc.driver}" url="${bctmp.jdbc.url}" userid="${bctmp.jdbc.username}" password="${bctmp.jdbc.password}" onerror="continue" encoding="${project.build.sourceEncoding}">
+									<classpath refid="maven.test.classpath" />
+									<transaction src="src/main/resources/sql/${sql.file.prefix}/bctmp_schema.sql" />
+								</sql>
+							</target>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

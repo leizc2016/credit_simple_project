@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcProviderLogMybatisDao">
+
+	<resultMap type="BcProviderLog" id="BcProviderLogMap">
+        <id property="id" column="id" />
+        <result property="queryDate" column="query_date" />
+        <result property="queryCondition" column="query_condition" />
+        <result property="queryResult" column="query_result" />
+        <result property="provider" column="provider" />
+        <result property="operator" column="operator" />
+    </resultMap>
+	
+       
+    <sql id="BcProviderLogCols">
+    	id,query_date,query_condition,query_result,provider,operator
+    </sql>
+   
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="findAll" parameterType="map" resultType="BcProviderLog">
+		select 
+ 		<include refid="BcProviderLogCols"/>
+		from bc_provider_log
+	</select>
+	
+	<update id="updateBcProviderLog" parameterType="BcProviderLog" >
+	 update bc_provider_log 
+	 set query_date=#{queryDate}
+	   , query_condition=#{queryCondition}, query_result=#{queryResult}
+	   , provider=#{provider} , operator=#{operator}
+	 where id=#{id}
+	</update>
+	
+    <insert id="saveBcProviderLog" parameterType="BcProviderLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_provider_log (
+		query_date,query_condition,query_result,provider,operator)
+		values (
+		#{queryDate},#{queryCondition},#{queryResult},#{provider},#{operator})
+	</insert>
+	
+	<select id="getBcProviderLogById" resultMap="BcProviderLogMap">
+    	select * from bc_provider_log 
+    	where id=#{id}
+    </select>
+    
+	<delete id="deleteBcProviderLog" parameterType="long">
+		 delete from bc_provider_log  
+		 where id=#{id}
+	</delete>
+	
+</mapper> 

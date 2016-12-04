@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcHisEnterpriseQCCDao">
+<resultMap type="BcHisEnterpriseQCC" id="BcHisEnterpriseQCCMap">
+        <id property="id" column ="id"/>
+		<result property="registerNum" column ="register_num"/>
+		<result property="idCardNum" column ="idcard_num"/>
+		<result property="fullName" column ="full_name"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+
+    <sql id="bcHisEnterpriseQCCCols" >
+			id ,
+			register_num,
+			idcard_num,
+			full_name,
+			create_time,
+			update_time
+    </sql>
+	
+	<select id="queryBcHisEnterPriseQCCById" resultMap="BcHisEnterpriseQCCMap">
+    	select <include refid="bcHisEnterpriseQCCCols"/> from bc_his_enterprise_qcc
+    	where id=#{id}
+    </select>
+    
+    <insert id="saveBcHisEnterPriseQCC" parameterType="BcHisEnterpriseQCC" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO bc_his_enterprise_qcc (register_num,
+			idcard_num,
+			full_name,
+			create_time,
+			update_time)
+		values (
+		#{registerNum},#{idCardNum},#{fullName},now(),now())
+	</insert>
+</mapper> 

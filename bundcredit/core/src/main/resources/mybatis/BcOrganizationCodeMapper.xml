@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.pactera.pds.u2.commerce.repository.mybatis.BcOrganizationCodeDao">
+<resultMap type="OrgCodeBean" id="BcOrganizationCodeMap">
+        <id property="orgCode" column ="org_code"/>
+		<result property="orgName" column ="org_name"/>
+		<result property="orgRegID" column ="org_reg_id"/>
+		<result property="orgType" column ="org_type"/>
+		<result property="issuer" column ="iss_uer"/>
+		<result property="orgAddress" column ="org_address"/>
+		<result property="applyDate" column ="apply_date"/>
+		<result property="startDate" column ="start_date"/>
+		<result property="endDate" column ="end_date"/>
+		<result property="businessName" column ="business_name"/>
+		<result property="createTime" column ="create_time"/>
+		<result property="updateTime" column ="update_time"/>
+    </resultMap>
+    <sql id="BcOrganizationCodeCols" >
+			org_code,
+			org_name,
+			org_reg_id,
+			org_type,
+			iss_uer,
+			org_address,
+			apply_date,
+			start_date,
+			end_date,
+			business_name,
+			create_time,
+			update_time
+    </sql>
+	
+	<select id="queryBcOrganizationCodeById" resultMap="BcOrganizationCodeMap">
+    	select <include refid="BcOrganizationCodeCols"/> from bc_organization_code
+    	where 1=1 
+    	<if test="orgCode!=null and orgCode!=''">and org_code=#{orgCode}</if>
+    	<if test="businessName!=null and businessName!=''">and business_name=#{businessName}</if>
+    </select>
+	
+    <insert id="saveBcOrganizationCode" parameterType="OrgCodeBean">
+		INSERT INTO bc_organization_code (org_code,
+			org_name,
+			org_reg_id,
+			org_type,
+			iss_uer,
+			org_address,
+			apply_date,
+			start_date,
+			end_date,
+			business_name,
+			create_time,
+			update_time
+		)
+		values (
+		#{orgCode},#{orgName},#{orgRegID},#{orgType},#{issuer},#{orgAddress},#{applyDate},#{startDate},#{endDate},#{businessName}
+		,now(),now())
+	</insert>
+</mapper> 
